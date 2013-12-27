@@ -1,42 +1,32 @@
 #!/usr/bin/env python
-__author__ = 'coleman'
 
 import time
 import os
-import sys
-import argparse
-
-start_time = time.time()
+import cmd
 
 
-def main(args):
-    parser = argparse.ArgumentParser(description='timer from the command line', prog='timer')
-    parser.add_argument('minutes', type=int)
-    parser.add_argument('message', nargs='*', type=str)
-    opts = parser.parse_args(args) # command line arguments
-    startTimer(opts.minutes, opts.message)
+class Timer(cmd.Cmd):
 
-def startTimer(minutes, message):
+    prompt = '(timer) '
 
-    message = ' '.join(message)
-    os.system('notify-send \' '+ message +'\'')
-    seconds = minutes * 60
-    os.system('notify-send \'Starting ' + str(minutes) + ' minute timer\'')
-    time.sleep(seconds)
-    os.system('notify-send \'Timer is up\n '+ message +'\'')
+    def do_start(self, line):
+        """
+        The whole command line is read in as a string. The
+        first argument must be an integer representing the number of minutes to sleep,
+        and the rest of the line becomes a message to print.
+        """
+        split_line = line.split()
+        minutes = int(split_line[0])
+        concatenated_message = ' '.join(split_line[1:])
+        os.system('notify-send \' '+ concatenated_message +'\'')
+        seconds = minutes * 60
+        os.system('notify-send \'Starting ' + str(minutes) + ' minute timer\'')
+        time.sleep(seconds)
+        os.system('notify-send \'Timer is up\n '+ concatenated_message +'\'')
 
-
-def displayMessage(message):
-    pass
-
-#    message = ' '.join(message)
-#    os.system('notify-send \' '+ message +'\'')
-#    seconds = minutes * 60
-#    os.system('notify-send \'Starting ' + str(minutes) + ' minute timer\'')
-#    time.sleep(seconds)
-#    os.system('notify-send \'Timer is up\n '+ message +'\'')
+    def default(self, line):
+        self.do_start(line)
 
 
 if __name__ == '__main__':    
-    main(sys.argv[1:])
-
+    Timer().cmdloop()

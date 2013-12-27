@@ -1,0 +1,9 @@
+.idea
+*~
+*.pyc
+*sublime*
+
+
+
+# ignored scripts
+.timer-old.py
